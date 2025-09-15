@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stylish Calculator</title>
+  <style>
+    body {
+      margin: 0;
+      background: linear-gradient(135deg, #1e3c72, #2a5298);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      font-family: 'Segoe UI', sans-serif;
+    }
+    .calculator {
+      background: rgba(241, 5, 5, 0.9);
+      padding: 30px;
+      border-radius: 20px;
+      box-shadow: 0 8px 25px rgba(231, 227, 227, 0.6);
+    }
+    .display {
+      width: 100%;
+      height: 70px;
+      background: #111;
+      color: rgb(37, 233, 233);
+      font-size: 2.2rem;
+      text-align: right;
+      padding: 12px;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      box-shadow: inset 0 0 12px rgba(7, 236, 236, 0.4);
+      overflow: hidden;
+    }
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 70px);
+      gap: 12px;
+      justify-content: center;
+    }
+    button {
+      height: 70px;
+      font-size: 1.3rem;
+      border: none;
+      border-radius: 12px;
+      background: linear-gradient(145deg, #3a3a3a, #1c1c1c);
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.1s, box-shadow 0.2s;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.4);
+    }
+    button:hover {
+      transform: scale(1.05);
+      box-shadow: 0 6px 14px rgba(0, 0, 0, 0.6);
+    }
+    .operator {
+      background: linear-gradient(145deg, #ff6a00, #ff9500);
+      color: #fff;
+    }
+    .equal {
+      background: linear-gradient(145deg, #00c851, #007e33);
+      grid-column: span 2;
+    }
+    .clear {
+      background: linear-gradient(145deg, #ff4444, #cc0000);
+      grid-column: span 2;
+    }
+    .special {
+      background: linear-gradient(145deg, #0066ff, #0044cc);
+    }
+  </style>
+</head>
+<body>
+  <div class="calculator">
+    <div class="display" id="display">0</div>
+    <div class="buttons">
+      <button onclick="clearDisplay()" class="clear">AC</button>
+      <button onclick="appendOperator('/')" class="operator">÷</button>
+      <button onclick="appendOperator('*')" class="operator">×</button>
+      <button onclick="appendNumber('7')">7</button>
+      <button onclick="appendNumber('8')">8</button>
+      <button onclick="appendNumber('9')">9</button>
+      <button onclick="appendOperator('-')" class="operator">−</button>
+      <button onclick="appendNumber('4')">4</button>
+      <button onclick="appendNumber('5')">5</button>
+      <button onclick="appendNumber('6')">6</button>
+      <button onclick="appendOperator('+')" class="operator">+</button>
+      <button onclick="appendNumber('1')">1</button>
+      <button onclick="appendNumber('2')">2</button>
+      <button onclick="appendNumber('3')">3</button>
+      <button onclick="appendNumber('0')" class="special">0</button>
+      <button onclick="appendDot('.')">.</button>
+      <button onclick="backspace()" class="special">⌫</button>
+      <button onclick="calculate()" class="equal">=</button>
+    </div>
+  </div>
+  <script>
+    let display = document.getElementById('display');
+    let currentInput = '';
+    let resultShown = false;
+
+    function appendNumber(number) {
+      if (resultShown) {
+        currentInput = '';
+        resultShown = false;
+      }
+      currentInput += number;
+      display.innerText = currentInput;
+    }
+    function appendOperator(operator) {
+      if (currentInput === '') return;
+      const lastChar = currentInput.slice(-1);
+      if (['+', '-', '*', '/'].includes(lastChar)) {
+        currentInput = currentInput.slice(0, -1) + operator;
+      } else {
+        currentInput += operator;
+      }
+      display.innerText = currentInput;
+    }
+    function appendDot(dot) {
+      if (resultShown) {
+        currentInput = '0';
+        resultShown = false;
+      }
+      if (!/\.\d*$/.test(currentInput)) {
+        currentInput += dot;
+        display.innerText = currentInput;
+      }
+    }
+    function clearDisplay() {
+      currentInput = '';
+      display.innerText = '0';
+    }
+    function backspace() {
+      if (resultShown) {
+        currentInput = '';
+        resultShown = false;
+      } else {
+        currentInput = currentInput.slice(0, -1);
+      }
+      display.innerText = currentInput || '0 ';
+    }
+    function calculate() {
+      try {
+        let result = eval(currentInput);
+        display.innerText = result;
+        currentInput = result.toString();
+        resultShown = true;
+      } catch (e) {
+        display.innerText = 'Error';
+        currentInput = '';
+      }
+    }
+  </script>
+</body>
+</html>

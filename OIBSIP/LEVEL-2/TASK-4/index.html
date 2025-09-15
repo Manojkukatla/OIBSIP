@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>To-Do Web App</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #56CCF2, #000000);
+      min-height: 100vh;
+      margin: 0;
+      padding: 20px;
+      color: #161616;
+    }
+    .container {
+      max-width: 600px;
+      background: #054563;
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(19, 18, 18, 0.2);
+      margin: auto;
+    }
+    h1 {
+      text-align: center;
+      color: #eb0909;
+    }
+    input {
+      width: 70%;
+      padding: 10px;
+      margin-right: 10px;
+      border: 1px solid #709399;
+      border-radius: 8px;
+    }
+    button {
+      padding: 10px 15px;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      background: #ff1a1ac0;
+      color: rgb(0, 0, 0);
+      font-size: 14px;
+    }
+    button:hover {
+      background: #1c5ec4;
+    }
+    ul {
+      list-style: none;
+      padding: 0;
+    }
+    li {
+      background: #f9f9f9;
+      margin: 8px 0;
+      padding: 10px;
+      border-radius: 8px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .done {
+      text-decoration: line-through;
+      color: gray;
+    }
+    .time {
+      font-size: 12px;
+      color: #666;
+    }
+    .actions button {
+      margin-left: 5px;
+      font-size: 12px;
+      padding: 5px 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1>To-Do List ✅</h1>
+    <input type="text" id="taskInput" placeholder="Enter a new task...">
+    <button onclick="addTask()">Add</button>
+
+    <h2>Pending Tasks</h2>
+    <ul id="pendingList"></ul>
+
+    <h2>Completed Tasks</h2>
+    <ul id="completedList"></ul>
+  </div>
+
+  <script>
+    function getDateTime() {
+      let now = new Date();
+      return now.toLocaleString();
+    }
+
+    function addTask() {
+      let input = document.getElementById("taskInput");
+      let taskText = input.value.trim();
+      if (taskText === "") {
+        alert("Please enter a task!");
+        return;
+      }
+
+      let li = document.createElement("li");
+      li.innerHTML = `
+        <span>
+          ${taskText} <br><span class="time">${getDateTime()}</span>
+        </span>
+        <div class="actions">
+          <button onclick="completeTask(this)">Complete</button>
+          <button onclick="editTask(this)">Edit</button>
+          <button onclick="deleteTask(this)">Delete</button>
+        </div>
+      `;
+      document.getElementById("pendingList").appendChild(li);
+      input.value = "";
+    }
+
+    function completeTask(btn) {
+      let li = btn.parentElement.parentElement;
+      li.classList.add("done");
+      li.querySelector(".actions").innerHTML = `
+        <button onclick="deleteTask(this)">Delete</button>
+      `;
+      document.getElementById("completedList").appendChild(li);
+    }
+
+    function editTask(btn) {
+      let li = btn.parentElement.parentElement;
+      let taskText = li.querySelector("span").innerText.split("\n")[0];
+      let newTask = prompt("Edit task:", taskText);
+      if (newTask) {
+        li.querySelector("span").innerHTML = `
+          ${newTask} <br><span class="time">Edited: ${getDateTime()}</span>
+        `;
+      }
+    }
+
+    function deleteTask(btn) {
+      let li = btn.parentElement.parentElement;
+      li.remove();
+    }
+  </script>
+</body>
+</html>

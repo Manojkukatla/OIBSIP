@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Single Page Auth</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background: linear-gradient(135deg, #667eea, #764ba2);
+      height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      color: #333;
+      margin: 0;
+    }
+    .container {
+      background: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 8px 20px rgba(0,0,0,0.3);
+      width: 320px;
+      display: none;
+      animation: fadeIn 0.4s ease;
+    }
+    h2 {
+      text-align: center;
+      color: #333;
+      margin-bottom: 20px;
+    }
+    input {
+      width: 100%;
+      padding: 12px;
+      margin: 8px 0;
+      border: 1px solid #ccc;
+      border-radius: 8px;
+      font-size: 14px;
+    }
+    button {
+      width: 100%;
+      padding: 12px;
+      background: #667eea;
+      color: white;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 16px;
+      margin-top: 10px;
+      transition: background 0.3s;
+    }
+    button:hover {
+      background: #5563c1;
+    }
+    p {
+      text-align: center;
+      margin-top: 15px;
+      font-size: 14px;
+    }
+    a {
+      color: #667eea;
+      text-decoration: none;
+      cursor: pointer;
+      font-weight: bold;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: scale(0.95); }
+      to { opacity: 1; transform: scale(1); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container" id="signupPage">
+    <h2>Sign Up</h2>
+    <input type="text" id="signupName" placeholder="Full Name" required>
+    <input type="email" id="signupEmail" placeholder="Email" required>
+    <input type="password" id="signupPassword" placeholder="Password" required>
+    <input type="password" id="signupConfirm" placeholder="Confirm Password" required>
+    <button onclick="signup()">Sign Up</button>
+    <p>Already have an account? <a onclick="showLogin()">Login</a></p>
+  </div>
+
+  
+    <div class="container" id="loginPage">
+    <h2>Login</h2>
+    <input type="email" id="loginEmail" placeholder="Email" required>
+    <input type="password" id="loginPassword" placeholder="Password" required>
+    <button onclick="login()">Login</button>
+    <p>Don't have an account? <a onclick="showSignup()">Sign Up</a></p>
+  </div>
+
+  <div class="container" id="securePage">
+    <h2>Welcome, <span id="username"></span> 🎉</h2>
+    <p>You are logged in successfully!</p>
+    <button onclick="logout()">Logout</button>
+  </div>
+
+  <script>
+    window.onload = function () {
+      const loggedIn = localStorage.getItem("loggedIn");
+      if (loggedIn === "true") {
+        document.getElementById("username").innerText = localStorage.getItem("name");
+        showSecure();
+      } else {
+        showSignup();
+      }
+    };
+
+    function showSignup() {
+      document.getElementById("signupPage").style.display = "block";
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("securePage").style.display = "none";
+    }
+
+    function showLogin() {
+      document.getElementById("signupPage").style.display = "none";
+      document.getElementById("loginPage").style.display = "block";
+      document.getElementById("securePage").style.display = "none";
+    }
+
+    function showSecure() {
+      document.getElementById("signupPage").style.display = "none";
+      document.getElementById("loginPage").style.display = "none";
+      document.getElementById("securePage").style.display = "block";
+    }
+
+    function signup() {
+      let name = document.getElementById("signupName").value.trim();
+      let email = document.getElementById("signupEmail").value.trim();
+      let password = document.getElementById("signupPassword").value;
+      let confirm = document.getElementById("signupConfirm").value;
+
+      if (!name || !email || !password || !confirm) {
+        alert("Please fill all fields!");
+        return;
+      }
+
+      if (!email.includes("@")) {
+        alert("Please enter a valid email!");
+        return;
+      }
+
+      if (password.length < 6) {
+        alert("Password must be at least 6 characters long!");
+        return;
+      }
+
+      if (password !== confirm) {
+        alert("Passwords do not match!");
+        return;
+      }
+
+      localStorage.setItem("name", "Manoj");
+      localStorage.setItem("email", "manojkukatla@gmail.com");
+      localStorage.setItem("password", "19283746");
+
+      alert("Signup successful! Please login.");
+      showLogin();
+    }
+
+    function login() {
+      let email = document.getElementById("loginEmail").value.trim();
+      let password = document.getElementById("loginPassword").value;
+
+      let storedEmail = localStorage.getItem("email");
+      let storedPassword = localStorage.getItem("password");
+      let storedName = localStorage.getItem("name");
+
+      if (email === storedEmail && password === storedPassword) {
+        localStorage.setItem("loggedIn", "true");
+        document.getElementById("username").innerText = storedName;
+        showSecure();
+      } else {
+        alert("Invalid email or password!");
+      }
+    }
+
+    function logout() {
+      localStorage.setItem("loggedIn", "false");
+      alert("Logged out!");
+      showLogin();
+    }
+  </script>
+</body>
+</html>
